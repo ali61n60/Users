@@ -42,7 +42,7 @@ namespace Users
                     //options.Cookies.ApplicationCookie.LoginPath = "/Users/Login";
 
                 }).AddEntityFrameworkStores<AppIdentityDbContext>();
-
+            
             services.AddMvc();
         }
 
