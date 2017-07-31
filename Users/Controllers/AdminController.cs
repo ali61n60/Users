@@ -14,6 +14,7 @@ namespace Users.Controllers
         public AdminController(UserManager<AppUser> usrMgr)
         {
             userManager = usrMgr;
+            
         }
         public ViewResult Index() => View(userManager.Users);
 

@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Users.Infrastructure;
 using Users.Models;
 
 namespace Users
@@ -26,10 +28,18 @@ namespace Users
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IPasswordValidator<AppUser>, CustomPasswordValidator>();
+            services.AddTransient<IUserValidator<AppUser>, CustomUserValidator>();
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(Configuration["Data:SportStoreIdentity:ConnectionString"]));
 
-            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+            services.AddIdentity<AppUser, IdentityRole>(
+                options =>
+                {
+                    options.Password.RequireUppercase = false;
+                    options.User.RequireUniqueEmail = true;
+                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+                }).AddEntityFrameworkStores<AppIdentityDbContext>();
 
             services.AddMvc();
         }
