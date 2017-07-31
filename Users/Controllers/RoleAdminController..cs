@@ -37,7 +37,7 @@ namespace Users.Controllers
                     AddErrorsFromResult(result);
                 }
             }
-            return View(name);
+            return View("Create",name);
         }
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
