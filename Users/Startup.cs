@@ -51,6 +51,7 @@ namespace Users
                                 if (context.Request.Path.StartsWithSegments("/api") &&
                                     context.Response.StatusCode == (int) HttpStatusCode.OK)
                                 {
+                                    
                                     context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
                                     context.Response.ContentType = "application/json";
                                     context.Response.WriteAsync("\"What did you say?\"");
