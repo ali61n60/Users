@@ -38,7 +38,9 @@ namespace Users
                 {
                     options.Password.RequireUppercase = false;
                     options.User.RequireUniqueEmail = true;
-                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+                    //options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+                    //options.Cookies.ApplicationCookie.LoginPath = "/Users/Login";
+
                 }).AddEntityFrameworkStores<AppIdentityDbContext>();
 
             services.AddMvc();
