@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Json;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Widget;
@@ -33,11 +34,22 @@ namespace ApiCaller
             _button1.Click += async (sender, e) => {
 
                 string url = "http://192.168.42.76/api/Reservation/SayHello";
-
-                JsonValue json = await FetchWeatherAsync(url);
-
-                string data= ParseInputData (json);
-                showData(data);
+                JsonValue json;
+                try
+                {
+                    json = await FetchWeatherAsync(url);
+                    if (json != null)
+                    {
+                        string data = ParseInputData(json);
+                        showData(data);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WebException exception=new WebException();
+                    
+                    showData(ex.Message);
+                }
             };
             _textView1 = FindViewById<TextView>(Resource.Id.textView1);
         }
@@ -50,7 +62,6 @@ namespace ApiCaller
         private string ParseInputData(JsonValue json)
         {
            return JsonConvert.DeserializeObject<string>(json.ToString());
-            
         }
 
         private async Task<JsonValue> FetchWeatherAsync(string url)
@@ -68,12 +79,15 @@ namespace ApiCaller
                 // Get a stream representation of the HTTP web response:
                 using (Stream stream = response.GetResponseStream())
                 {
+                    StreamReader reader=new StreamReader(stream);
+                    string res = reader.ReadToEnd();
+                    
                     // Use this stream to build a JSON document object:
                     JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
-                    Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
+                        Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
 
-                    // Return the JSON document:
-                    return jsonDoc;
+                        // Return the JSON document:
+                        return jsonDoc;
                 }
             }
         }

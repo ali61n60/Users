@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -38,14 +41,39 @@ namespace Users
                 {
                     options.Password.RequireUppercase = false;
                     options.User.RequireUniqueEmail = true;
+
+
+                    options.Cookies.ApplicationCookie.Events =
+                        new CookieAuthenticationEvents
+                        {
+                            OnRedirectToLogin = context =>
+                            {
+                                if (context.Request.Path.StartsWithSegments("/api") &&
+                                    context.Response.StatusCode == (int) HttpStatusCode.OK)
+                                {
+                                    context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                                    context.Response.ContentType = "application/json";
+                                    context.Response.WriteAsync("\"What did you say?\"");
+                                }
+                                else
+                                    context.Response.Redirect(context.RedirectUri);
+
+                                return Task.CompletedTask;
+                            }
+                        };
+
+
+
+
                     //options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
                     //options.Cookies.ApplicationCookie.LoginPath = "/Users/Login";
 
                 }).AddEntityFrameworkStores<AppIdentityDbContext>();
-            
+
             services.AddMvc();
         }
 
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
