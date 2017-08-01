@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,13 +21,19 @@ namespace Users.Controllers
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
         private PasswordHasher<AppUser> passwordHasher;
-        private ConfigurationRoot appConfiguration;
+        private IConfigurationRoot appConfiguration;
 
-        public AccountApiController(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr)
+        public AccountApiController(UserManager<AppUser> userMgr, SignInManager<AppUser> signinMgr, IHostingEnvironment env)
         {
             userManager = userMgr;
             signInManager = signinMgr;
             passwordHasher = new PasswordHasher<AppUser>();
+
+            appConfiguration = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json").Build();
+
+
 
         }
         
@@ -35,12 +42,14 @@ namespace Users.Controllers
         [HttpPost("token")]
         public async Task<IActionResult> Token([FromBody] LoginModel model)
         {
+            //[FromBody] LoginModel model
+            //LoginModel model =new LoginModel(){Email = "bob@example.com",Password = "secret123"};
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            AppUser user = await userManager.FindByNameAsync(model.Email);
+            AppUser user = await userManager.FindByEmailAsync(model.Email);
 
             if (user == null || passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) != PasswordVerificationResult.Success)
             {

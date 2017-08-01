@@ -75,11 +75,5 @@ namespace Users.Controllers
         {
             return View();
         }
-
-
-
-
-        
-        
     }
 }
