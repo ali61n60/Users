@@ -10,10 +10,22 @@ namespace Users.Controllers
     public class HomeController : Controller
     {
         [Authorize]
-        public ViewResult Index()
+        public IActionResult Index() => View(GetData(nameof(Index)));
+
+        [Authorize(Roles = "Users, Managers")]
+        public IActionResult OtherAction() => View("Index",GetData(nameof(OtherAction)));
+
+        private Dictionary<string, object> GetData(string actionName)
         {
-           return View(new Dictionary<string, object>
-                {["Placeholder"] = "Placeholder"});
+            return new Dictionary<string, object>
+            {
+                ["Action"] = actionName,
+                ["User"] = HttpContext.User.Identity.Name,
+                ["Authenticated"] = HttpContext.User.Identity.IsAuthenticated,
+                ["Auth Type"] = HttpContext.User.Identity.AuthenticationType,
+                ["In Users Role"] = HttpContext.User.IsInRole("Users"),
+                ["In Managers Role"]=HttpContext.User.IsInRole("Managers")
+            };
         }
     }
 }
