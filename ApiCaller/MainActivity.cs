@@ -123,8 +123,8 @@ namespace ApiCaller
             //string n2val = "CfDJ8A5SbqnuW9VIhrFstqlNZDXFeSA8eiyUIaTi_mAy3tZxlyNk8He4EKCuvgNlURYxLVu643-Z2fJxID03lWjqliL7wfHOePVZBUZdsg0IUqSwAx2fgsFZRq9i7vwYlOUq2VlZH4l7uxYEoabQLXJrmn0";
 
             //request.Headers.Add(HttpRequestHeader.Cookie, String.Format("{0}={1};{2}={3}",n1,n1Val,n2,n2val));
+            request.Headers.Add(HttpRequestHeader.Authorization, "bearer "+_myToken.token);
             
-
             // Send the request to the server and wait for the response:
             using (WebResponse response = await request.GetResponseAsync())
             {

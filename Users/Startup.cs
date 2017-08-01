@@ -93,10 +93,10 @@ namespace Users
                 TokenValidationParameters = new TokenValidationParameters
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Key"])),
-                    ValidAudience = Configuration["AppConfiguration:SiteUrl"],
+                    ValidAudience = Configuration["SiteUrl"],
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
-                    ValidIssuer = Configuration["AppConfiguration:SiteUrl"]
+                    ValidIssuer = Configuration["SiteUrl"]
                 }
             });
 
