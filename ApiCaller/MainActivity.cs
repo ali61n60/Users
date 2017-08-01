@@ -17,6 +17,7 @@ namespace ApiCaller
     public class MainActivity : Activity
     {
         private Button _button1;
+        private Button _buttonGetToken;
         private TextView _textView1;
         private int _numberOfClicks;
         protected override void OnCreate(Bundle bundle)
@@ -30,6 +31,55 @@ namespace ApiCaller
 
         private void initFields()
         {
+            _buttonGetToken = FindViewById<Button>(Resource.Id.buttonGetToken);
+            _buttonGetToken.Click += async (sender, args) =>
+            {
+                string url = "http://192.168.42.76/api/AccountApi/token";
+                JsonValue json;
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(new Uri(url));
+                    request.ContentType = "application/json";
+                    request.Method = "POST";
+
+                    using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    {
+                        string jsonData = "{\"Email\":\"bob@example.com\"," +
+                                          "\"Password\":\"secret123\"}";
+
+                        streamWriter.Write(jsonData);
+                        streamWriter.Flush();
+                        streamWriter.Close();
+                    }
+
+
+
+
+                    // Send the request to the server and wait for the response:
+                    using (WebResponse response = await request.GetResponseAsync())
+                    {
+                        // Get a stream representation of the HTTP web response:
+                        using (Stream stream = response.GetResponseStream())
+                        {
+                            // Use this stream to build a JSON document object:
+                            JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+                            Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
+                            string myToken = JsonConvert.DeserializeObject<string>(jsonDoc.ToString());
+                            showData(myToken);
+
+
+
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    showData(ex.Message);
+                }
+            };
+
+
+
             _button1 = FindViewById<Button>(Resource.Id.button1);
             _button1.Click += async (sender, e) => {
 

@@ -79,52 +79,7 @@ namespace Users.Controllers
 
 
 
-
-        [HttpPost("token")]
-        public async Task<IActionResult> Token([FromBody] LoginModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            
-            AppUser user = await userManager.FindByNameAsync(model.Email);
-
-            if (user == null || passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) != PasswordVerificationResult.Success)
-            {
-                return BadRequest();
-            }
-
-            var token = await GetJwtSecurityToken(user);
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
-        }
-
-        private async Task<JwtSecurityToken> GetJwtSecurityToken(AppUser user)
-        {
-            var userClaims = await userManager.GetClaimsAsync(user);
-            JwtSecurityToken jwt=new JwtSecurityToken();
-            return new JwtSecurityToken(
-                issuer: appConfiguration["SiteUrl"],
-                audience: appConfiguration["SiteUrl"],
-                claims: GetTokenClaims(user).Union(userClaims),
-                expires: DateTime.UtcNow.AddMinutes(10),
-                signingCredentials: new SigningCredentials
-                (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Key"])), SecurityAlgorithms.HmacSha256)
-            );
-        }
-
-        private static IEnumerable<Claim> GetTokenClaims(AppUser user)
-        {
-            return new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName)
-            };
-        }
+        
+        
     }
 }
