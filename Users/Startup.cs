@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -14,11 +15,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Users.Infrastructure;
 using Users.Models;
 
 namespace Users
 {
+    //https://pioneercode.com/post/authentication-in-an-asp-dot-net-core-api-part-3-json-web-token
     public class Startup
     {
 
@@ -35,7 +38,7 @@ namespace Users
             services.AddTransient<IUserValidator<AppUser>, CustomUserValidator>();
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(Configuration["Data:SportStoreIdentity:ConnectionString"]));
-
+            
             services.AddIdentity<AppUser, IdentityRole>(
                 options =>
                 {
@@ -64,12 +67,11 @@ namespace Users
                         };
 
 
-
-
                     //options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
                     //options.Cookies.ApplicationCookie.LoginPath = "/Users/Login";
 
                 }).AddEntityFrameworkStores<AppIdentityDbContext>();
+           
 
             services.AddMvc();
         }
@@ -82,6 +84,21 @@ namespace Users
             app.UseStatusCodePages();
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Key"])),
+                    ValidAudience = Configuration["AppConfiguration:SiteUrl"],
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = Configuration["AppConfiguration:SiteUrl"]
+                }
+            });
+
             app.UseIdentity();
             app.UseMvcWithDefaultRoute();
 
