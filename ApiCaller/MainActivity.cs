@@ -106,14 +106,17 @@ namespace ApiCaller
              {
                  string url = "http://192.168.42.76/api/Reservation/SayHelloWithParameter";
                  HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                 request.ContentType = "application/json";
+                 request.Method = "POST";
+                 request.Headers.Add(HttpRequestHeader.Authorization, "bearer " + _myToken.token);
                  try
                  {
-
-
                      using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                      {
-                         string jsonData = "{\"Name\":\"Ali Nejati\"," +
-                                          "\"Phone\":\"09122012908\"}";
+                         MethodParam myMethodParam=new MethodParam(){Name = "Ali Nejati", Phone = "0912"};
+                         //string jsonData = "{\"Name\":\"Ali Nejati\"," +
+                           //               "\"Phone\":\"09122012908\"}";
+                         string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(myMethodParam);
 
                          streamWriter.Write(jsonData);
                          streamWriter.Flush();
@@ -129,7 +132,7 @@ namespace ApiCaller
                             // Use this stream to build a JSON document object:
                             JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
                              string result = JsonConvert.DeserializeObject<string>(jsonDoc.ToString());
-                             showData(_myToken.token);
+                             showData(result);
                          }
                      }
                  }
@@ -177,6 +180,12 @@ namespace ApiCaller
                 }
             }
         }
+    }
+
+    public class MethodParam
+    {
+        public string Name { get; set; }
+        public string Phone { get; set; }
     }
 }
 

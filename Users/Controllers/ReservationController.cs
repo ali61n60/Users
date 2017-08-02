@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Users.Models;
 
 namespace ApiControllers.Controllers
@@ -28,10 +29,12 @@ namespace ApiControllers.Controllers
             return Json(String.Format("Hello {0} {1}", userId, DateTime.Now.ToString()));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public JsonResult SayHelloWithParameter(MethodParam methodParam)
+        public IActionResult SayHelloWithParameter([FromBody] MethodParam methodParam)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
             return Json(String.Format("Hello {0}. your phone is {1}", methodParam.Name,methodParam.Phone));
         }
