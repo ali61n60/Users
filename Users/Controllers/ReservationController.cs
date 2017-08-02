@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Model;
 using Users.Models;
 
 namespace ApiControllers.Controllers
@@ -42,9 +43,5 @@ namespace ApiControllers.Controllers
 
     }
 
-    public class MethodParam
-    {
-        public string Name { get; set; }
-        public string Phone { get; set; }
-    }
+    
 }

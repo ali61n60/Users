@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Widget;
 using Android.OS;
+using Model;
 using Newtonsoft.Json;
 
 //https://developer.xamarin.com/recipes/android/web_services/consuming_services/call_a_rest_web_service/
@@ -182,10 +183,6 @@ namespace ApiCaller
         }
     }
 
-    public class MethodParam
-    {
-        public string Name { get; set; }
-        public string Phone { get; set; }
-    }
+   
 }
 

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Copyright>No</Copyright>
+    <PackageLicenseUrl>No</PackageLicenseUrl>
+    <PackageProjectUrl>No</PackageProjectUrl>
+    <PackageIconUrl>No</PackageIconUrl>
+    <RepositoryUrl>No</RepositoryUrl>
+    <RepositoryType>No</RepositoryType>
+    <PackageTags>No</PackageTags>
+    <PackageReleaseNotes>test</PackageReleaseNotes>
+  </PropertyGroup>
+
+</Project>
