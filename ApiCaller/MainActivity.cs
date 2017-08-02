@@ -18,6 +18,7 @@ namespace ApiCaller
     {
         private Button _button1;
         private Button _buttonGetToken;
+        private Button _buttonHelloParam;
         private TextView _textView1;
         private int _numberOfClicks;
         private Token _myToken;
@@ -26,7 +27,7 @@ namespace ApiCaller
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
-            SetContentView (Resource.Layout.Main);
+            SetContentView(Resource.Layout.Main);
             initFields();
         }
 
@@ -36,11 +37,11 @@ namespace ApiCaller
             _buttonGetToken.Click += async (sender, args) =>
             {
                 string url = "http://192.168.42.76/api/AccountApi/token";
-                
+
                 JsonValue json;
                 try
                 {
-                    HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(new Uri(url));
+                    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
                     request.ContentType = "application/json";
                     request.Method = "POST";
 
@@ -66,7 +67,7 @@ namespace ApiCaller
                             // Use this stream to build a JSON document object:
                             JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
                             Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
-                             _myToken = JsonConvert.DeserializeObject<Token>(jsonDoc.ToString());
+                            _myToken = JsonConvert.DeserializeObject<Token>(jsonDoc.ToString());
                             showData(_myToken.token);
                         }
                     }
@@ -80,7 +81,8 @@ namespace ApiCaller
 
 
             _button1 = FindViewById<Button>(Resource.Id.button1);
-            _button1.Click += async (sender, e) => {
+            _button1.Click += async (sender, e) =>
+            {
 
                 string url = "http://192.168.42.76/api/Reservation/SayHello";
                 JsonValue json;
@@ -98,8 +100,49 @@ namespace ApiCaller
                     showData(ex.Message);
                 }
             };
+
+            _buttonHelloParam = FindViewById<Button>(Resource.Id.buttonHelloParam);
+            _buttonHelloParam.Click += async (sender, args) =>
+             {
+                 string url = "http://192.168.42.76/api/Reservation/SayHelloWithParameter";
+                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+                 try
+                 {
+
+
+                     using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                     {
+                         string jsonData = "{\"Name\":\"Ali Nejati\"," +
+                                          "\"Phone\":\"09122012908\"}";
+
+                         streamWriter.Write(jsonData);
+                         streamWriter.Flush();
+                         streamWriter.Close();
+                     }
+
+                    // Send the request to the server and wait for the response:
+                    using (WebResponse response = await request.GetResponseAsync())
+                     {
+                        // Get a stream representation of the HTTP web response:
+                        using (Stream stream = response.GetResponseStream())
+                         {
+                            // Use this stream to build a JSON document object:
+                            JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+                             string result = JsonConvert.DeserializeObject<string>(jsonDoc.ToString());
+                             showData(_myToken.token);
+                         }
+                     }
+                 }
+                 catch (Exception ex)
+                 {
+                     showData(ex.Message);
+                 }
+             };
+
             _textView1 = FindViewById<TextView>(Resource.Id.textView1);
         }
+
+
 
         private void showData(string data)
         {
@@ -108,7 +151,7 @@ namespace ApiCaller
 
         private string ParseInputData(JsonValue json)
         {
-           return JsonConvert.DeserializeObject<string>(json.ToString());
+            return JsonConvert.DeserializeObject<string>(json.ToString());
         }
 
         private async Task<JsonValue> FetchWeatherAsync(string url)
@@ -117,14 +160,8 @@ namespace ApiCaller
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
             request.ContentType = "application/json";
             request.Method = "GET";
-            //string n1 = ".AspNetCore.Identity.Application";
-            //string n2 = ".AspNetCore.Antiforgery.8tWQedTd03A";
-            //string n1Val = "CfDJ8A5SbqnuW9VIhrFstqlNZDXmY3fctMXxOGP-66GEJYFHJ5mtZ5lk7LFi0Swe-vQ5VcTlxgodlDJZlCABVQaZ_leEK1WiT6yBcmrswD_Ah4zQcn-ki0Wj8i0kKTB4idweYXjTBtm4uGJN9N4r3Kdi7yxA_l5MDzHkZiT1S3AYq3p5_nrFqu1t5j4bb2tSOFfyOB08jCBwQaWUCTV-O5J6T59tZMyXyKpZ6KX85akZJXtSeOttz9m3EMIqWPraqmj8qqKDlkIYLDD6kp1uWlTrza5qZYFrRZPwLuSijeDu0FRt9xyTFu4SRXHXOv1ZNC5C1Nk2Z70wNksr1RWlt1C7obNp_lFY5GCE73noKXE8ql4-uCgMIqJdGTW23iAGAhy2qrrQLtxXHmVvZK0LtNOGtuDtaNwK5_eGl19g8b7gbFY8-G3nP71I2euOMn1a8lxpEaqhv8m3CAIPKVkfVvwaGPKJUFHk9JHpUbUi3c36iGcmcGOtAL6uVhVB07jNs67cl1k1EcLVUd6yOa8UAhOeBiH6t6fvb2eZ0RzZ3zNqYlyUSFCYaHyk6Dx85GkFSYti2bM9-Ampq8WZ86mKCvu5F7g";
-            //string n2val = "CfDJ8A5SbqnuW9VIhrFstqlNZDXFeSA8eiyUIaTi_mAy3tZxlyNk8He4EKCuvgNlURYxLVu643-Z2fJxID03lWjqliL7wfHOePVZBUZdsg0IUqSwAx2fgsFZRq9i7vwYlOUq2VlZH4l7uxYEoabQLXJrmn0";
+            request.Headers.Add(HttpRequestHeader.Authorization, "bearer " + _myToken.token);
 
-            //request.Headers.Add(HttpRequestHeader.Cookie, String.Format("{0}={1};{2}={3}",n1,n1Val,n2,n2val));
-            request.Headers.Add(HttpRequestHeader.Authorization, "bearer "+_myToken.token);
-            
             // Send the request to the server and wait for the response:
             using (WebResponse response = await request.GetResponseAsync())
             {
@@ -133,10 +170,10 @@ namespace ApiCaller
                 {
                     // Use this stream to build a JSON document object:
                     JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
-                        Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
+                    Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
 
-                        // Return the JSON document:
-                        return jsonDoc;
+                    // Return the JSON document:
+                    return jsonDoc;
                 }
             }
         }

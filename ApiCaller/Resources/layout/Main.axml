@@ -3,16 +3,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <Button
-    android:text="Get Token"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/buttonGetToken" />
+    <Button
+        android:text="Get Token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonGetToken" />
     <Button
         android:text="Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button1" />
+  <Button
+    android:text="Hello Param"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonHelloParam" />
     <TextView
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"

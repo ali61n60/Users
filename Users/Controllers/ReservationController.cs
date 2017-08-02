@@ -9,7 +9,7 @@ using Users.Models;
 
 namespace ApiControllers.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class ReservationController : Controller
     {
         private string userId;
@@ -18,14 +18,30 @@ namespace ApiControllers.Controllers
         {
             userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
-        
 
-        [HttpGet("SayHello")]
-       [Authorize]
+
+        [HttpGet]
+        [Authorize]
         public JsonResult SayHello()
-       {
-           
-          return Json(String.Format("Hello {0} {1}",userId, DateTime.Now.ToString()));
-       }
+        {
+
+            return Json(String.Format("Hello {0} {1}", userId, DateTime.Now.ToString()));
+        }
+
+        [HttpGet]
+        [Authorize]
+        public JsonResult SayHelloWithParameter(MethodParam methodParam)
+        {
+
+            return Json(String.Format("Hello {0}. your phone is {1}", methodParam.Name,methodParam.Phone));
+        }
+
+
+    }
+
+    public class MethodParam
+    {
+        public string Name { get; set; }
+        public string Phone { get; set; }
     }
 }
