@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Model;
-using Users.Models;
+using ModelLayer;
+
 
 namespace ApiControllers.Controllers
 {
@@ -34,9 +31,9 @@ namespace ApiControllers.Controllers
         [Authorize]
         public IActionResult SayHelloWithParameter([FromBody] MethodParam methodParam)
         {
+            
             if (!ModelState.IsValid)
                 return BadRequest();
-
             return Json(String.Format("Hello {0}. your phone is {1}", methodParam.Name,methodParam.Phone));
         }
 

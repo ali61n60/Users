@@ -56,7 +56,7 @@ namespace Users.Controllers
                 return BadRequest();
             }
 
-            var token = await GetJwtSecurityToken(user);
+            JwtSecurityToken token = await GetJwtSecurityToken(user);
 
             return Ok(new
             {
@@ -67,15 +67,15 @@ namespace Users.Controllers
 
         private async Task<JwtSecurityToken> GetJwtSecurityToken(AppUser user)
         {
-            var userClaims = await userManager.GetClaimsAsync(user);
+            IList<Claim> userClaims = await userManager.GetClaimsAsync(user);
             JwtSecurityToken jwt = new JwtSecurityToken();
             return new JwtSecurityToken(
-                issuer: appConfiguration["SiteUrl"],
-                audience: appConfiguration["SiteUrl"],
+                issuer: appConfiguration["JwtBearer:SiteUrl"],
+                audience: appConfiguration["JwtBearer:SiteUrl"],
                 claims: GetTokenClaims(user).Union(userClaims),
                 expires: DateTime.UtcNow.AddMinutes(10),
                 signingCredentials: new SigningCredentials
-                    (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Key"])), SecurityAlgorithms.HmacSha256)
+                    (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["JwtBearer:Key"])), SecurityAlgorithms.HmacSha256)
             );
         }
 

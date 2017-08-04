@@ -11,6 +11,7 @@
     <RepositoryType>No</RepositoryType>
     <PackageTags>No</PackageTags>
     <PackageReleaseNotes>test</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
   </PropertyGroup>
 
 </Project>

@@ -38,7 +38,7 @@ namespace Users
             services.AddTransient<IUserValidator<AppUser>, CustomUserValidator>();
             
             services.AddDbContext<AppIdentityDbContext>(options =>
-                options.UseSqlServer(Configuration["Data:SportStoreIdentity:ConnectionString"]));
+                options.UseSqlServer(Configuration["Data:ConnectionString"]));
             
             services.AddIdentity<AppUser, IdentityRole>(
                 options =>
@@ -93,14 +93,15 @@ namespace Users
                 TokenValidationParameters = new TokenValidationParameters
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Key"])),
-                    ValidAudience = Configuration["SiteUrl"],
+                    ValidAudience = Configuration["JwtBearer:SiteUrl"],
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
-                    ValidIssuer = Configuration["SiteUrl"]
+                    ValidIssuer = Configuration["JwtBearer:SiteUrl"]
                 }
             });
 
             app.UseIdentity();
+            app.UseClaimsTransformation(LocationClaimsProvider.AddClaims);
             app.UseMvcWithDefaultRoute();
 
             AppIdentityDbContext.CreateAdminAccount(app.ApplicationServices,Configuration).Wait();

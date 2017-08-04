@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "Users\Users.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaller", "ApiCaller\ApiCaller.csproj", "{43462A47-1B6D-40E5-A5D5-96EC30EEFC7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{AB40870D-84AD-48B6-9464-D6096E29A749}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelLayer", "Model\ModelLayer.csproj", "{AB40870D-84AD-48B6-9464-D6096E29A749}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
