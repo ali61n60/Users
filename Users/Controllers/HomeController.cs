@@ -21,8 +21,12 @@ namespace Users.Controllers
         [Authorize]
         public IActionResult Index() => View(GetData(nameof(Index)));
 
-        [Authorize(Roles = "Users, Managers")]
+        //[Authorize(Roles = "Users, Managers")]
+        [Authorize(Policy = "DCUsers")]
         public IActionResult OtherAction() => View("Index",GetData(nameof(OtherAction)));
+
+        [Authorize(Policy = "NotBob")]
+        public IActionResult NotBob() => View("Index", GetData(nameof(NotBob)));
 
         private Dictionary<string, object> GetData(string actionName)
         {
